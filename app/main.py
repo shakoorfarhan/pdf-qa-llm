@@ -1,12 +1,24 @@
 from fastapi import FastAPI, UploadFile, File, Query
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, FileResponse
+from fastapi.staticfiles import StaticFiles
 import os
+
 from app.loaders import load_pdf
 from app.vector import build_vectorstore
 from app.qa import answer_question
 
 app = FastAPI()
 
+# ✅ Serve HTML from root
+@app.get("/")
+def read_index():
+    return FileResponse("static/index.html")
+
+# ✅ Mount static files under /static
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+
+# ✅ Upload PDF
 @app.post("/upload")
 async def upload(file: UploadFile = File(...)):
     if not file.filename.endswith(".pdf"):
@@ -22,6 +34,8 @@ async def upload(file: UploadFile = File(...)):
     build_vectorstore(text)
     return {"status": "PDF processed"}
 
+
+# ✅ Ask question
 @app.get("/query")
 def query(q: str = Query(...)):
     answer = answer_question(q)

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PDF QA Uploader</title>
+</head>
+<body>
+    <h1>Upload PDF and Ask Questions</h1>
+
+    <!-- Upload Form -->
+    <form action="/upload" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" accept="application/pdf" required />
+        <button type="submit">Upload PDF</button>
+    </form>
+
+    <br/>
+
+    <!-- Ask Question Form -->
+    <form action="/query" method="get">
+        <input type="text" name="q" placeholder="Ask a question..." required />
+        <button type="submit">Ask</button>
+    </form>
+</body>
+</html>
