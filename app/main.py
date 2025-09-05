@@ -2,12 +2,20 @@ from fastapi import FastAPI, UploadFile, File, Query
 from fastapi.responses import JSONResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 import os
-
+from fastapi.middleware.cors import CORSMiddleware
 from app.loaders import load_pdf
 from app.vector import build_vectorstore
 from app.qa import answer_question
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],  # frontend origin
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # ✅ Serve HTML from root
 @app.get("/")
