@@ -1,70 +1,58 @@
-# PDF-QA-LLM
+# PDF QA LLM
 
-A simple **RAG (Retrieval-Augmented Generation)** app to answer questions from uploaded PDF files using **FastAPI**, **LangChain**, and **Ollama (Mistral model)**, with a **Next.js frontend** UI for real-time interaction.
+Local retrieval-augmented generation app for asking questions about uploaded PDF files. A FastAPI backend extracts PDF text, stores embeddings in Chroma, and answers questions through an Ollama-hosted model. A Next.js frontend provides the upload and question UI.
 
 ## Features
 
-- Upload any PDF (e.g. cover letter, resume, research paper)
-- Automatically extract, chunk, and embed text using LangChain
-- Store vector embeddings with **ChromaDB**
-- Ask questions through a beautiful **React UI (Next.js)**
-- Answers are generated using **Mistral** model via **Ollama**
-- Fully local setup (no OpenAI or third-party API needed)
-- Simple REST API backend with FastAPI
-- Frontend shows **upload progress**, status, and answer in real time
-
----
+- Upload PDF files through API or UI.
+- Extract text with PyMuPDF/LangChain helpers.
+- Build a local Chroma vector store.
+- Ask questions against the uploaded document.
+- Run model inference locally through Ollama.
+- Use the included Next.js frontend or the simple static HTML page.
 
 ## Tech Stack
 
-### Backend (RAG Engine)
+- Python, FastAPI, LangChain, ChromaDB, Ollama
+- Next.js, React, TypeScript, Tailwind CSS
+- Axios for frontend API calls
 
-- Python 3.13
-- FastAPI
-- LangChain + LangChain-Ollama
-- ChromaDB (for local vector storage)
-- PyMuPDF (PDF parsing)
-- Ollama (local LLMs like Mistral)
-- CORS middleware
+## Repository Structure
 
-### Frontend (UI)
-
-- React + Next.js (App Router)
-- TailwindCSS (Shadcn components)
-- Axios
-- TypeScript (optional, JS works too)
-
----
-
-## Setup Instructions
-
-### 1. Clone the Repo
-
-```bash
-git clone git@github.com:shakoorfarhan/pdf-qa-llm.git
-cd pdf-qa-llm
+```text
+app/                 FastAPI backend and RAG pipeline
+static/              Simple static HTML client
+frontend/            Next.js frontend
+data/                Local uploaded PDFs, ignored by git
+chroma_db/           Local Chroma database, ignored by git
 ```
 
-### 2. Backend (FastAPI + Ollama)
+## Backend Setup
+
+Create a virtual environment and install dependencies:
 
 ```bash
-# Create and activate virtual environment
-python3.13 -m venv venv
-source venv/bin/activate
-
-# Install dependencies
+python3 -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
+```
 
-# Start Ollama in background
+Start the local model:
+
+```bash
+ollama pull mistral
 ollama run mistral
+```
 
-# Run FastAPI server
+Run the API:
+
+```bash
 uvicorn app.main:app --reload
 ```
 
-> Backend runs on: `http://localhost:8000`
+Backend URL: `http://localhost:8000`
 
-### 3. Frontend (Next.js)
+## Frontend Setup
 
 ```bash
 cd frontend
@@ -72,53 +60,27 @@ npm install
 npm run dev
 ```
 
-> Frontend runs on: `http://localhost:3000`
+Frontend URL: `http://localhost:3000`
 
----
+## API Reference
 
-## API Endpoints
+Upload a PDF:
 
-### Upload PDF
-
-```http
-POST /upload
-Form field: file=<yourfile.pdf>
+```bash
+curl -X POST http://localhost:8000/upload \
+  -F "file=@example.pdf"
 ```
 
-### Ask Question
+Ask a question:
 
-```http
-GET /query?q=What is the main topic?
+```bash
+curl "http://localhost:8000/query?q=What%20is%20this%20document%20about%3F"
 ```
 
----
+## Maintenance Notes
 
-## Folder Structure
-
-```
-.
-├── app/                  # FastAPI backend
-│   ├── main.py           # Routes & CORS setup
-│   ├── loaders.py        # PDF loading logic
-│   ├── vector.py         # ChromaDB vector store
-│   └── qa.py             # Answering logic using LangChain + Ollama
-├── static/               # Optional: legacy HTML form
-├── data/                 # Uploaded PDFs
-├── chroma/               # Chroma vector DB
-├── frontend/             # Next.js React UI
-│   └── src/app/page.tsx  # React app with file upload + question form
-├── requirements.txt
-└── README.md
-```
-
----
-
-## Notes
-
-- All models run **locally** via Ollama – no OpenAI key needed
-- No data leaves your machine
-- Portable, hackable, and perfect as a portfolio project
-
----
-
-> Built by Farhan Shakoor — September 2025
+- Do not commit `data/`, `chroma_db/`, `__pycache__/`, virtual environments, or local model output.
+- Keep backend dependencies in `requirements.txt`.
+- Run frontend lint/build before UI changes.
+- Add backend tests around upload validation, text extraction, and question answering before expanding the RAG pipeline.
+- Keep Ollama model names configurable if you add more models.
