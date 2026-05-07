@@ -7,3 +7,4 @@ langchain-ollama
 chromadb
 pymupdf
 sentence-transformers
+pytest

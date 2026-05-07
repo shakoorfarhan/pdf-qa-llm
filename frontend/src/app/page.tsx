@@ -47,7 +47,7 @@ export default function Home() {
         setUploadProgress(null); // Reset progress bar
       }, 1500); // Optional delay: adjust based on backend speed
 
-    } catch (error) {
+    } catch {
       setUploadStatus("❌ Upload failed");
       setUploadProgress(null);
 
@@ -63,7 +63,7 @@ export default function Home() {
         params: { q: question },
       });
       setAnswer(response.data.answer);
-    } catch (error) {
+    } catch {
       setAnswer("Failed to get answer");
     } finally {
       setLoading(false);

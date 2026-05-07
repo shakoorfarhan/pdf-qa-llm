@@ -35,6 +35,7 @@ Create a virtual environment and install dependencies:
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
+cp .env.example .env
 ```
 
 Start the local model:
@@ -75,6 +76,35 @@ Ask a question:
 
 ```bash
 curl "http://localhost:8000/query?q=What%20is%20this%20document%20about%3F"
+```
+
+## Configuration
+
+Start from `.env.example`:
+
+```env
+UPLOAD_DIR=data
+VECTORSTORE_DIR=chroma_db
+MAX_UPLOAD_MB=10
+MIN_EXTRACTED_CHARS=50
+RAG_CHUNK_SIZE=1000
+RAG_CHUNK_OVERLAP=200
+RAG_MAX_CHUNKS=500
+EMBEDDING_MODEL=all-MiniLM-L6-v2
+OLLAMA_MODEL=mistral
+CORS_ORIGINS=http://localhost:3000
+```
+
+## Engineering Notes
+
+- [Architecture](docs/architecture.md) describes the RAG ingestion and answer flow.
+- [Production Readiness](docs/production-readiness.md) lists current gates, safeguards, and next hardening work.
+
+## Checks
+
+```bash
+pytest
+cd frontend && npm run lint && npm run build
 ```
 
 ## Maintenance Notes
